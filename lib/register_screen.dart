@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'login_screen.dart';
+import 'auth_service.dart'; // ✅ Dùng AuthService để lưu tài khoản
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -14,6 +15,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final TextEditingController _confirmPasswordController =
       TextEditingController();
 
+  // Hàm xử lý đăng ký
   void _register() {
     String username = _usernameController.text.trim();
     String password = _passwordController.text.trim();
@@ -21,30 +23,39 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
     if (username.isEmpty || password.isEmpty || confirmPassword.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Vui lòng nhập đầy đủ thông tin!")),
+        const SnackBar(content: Text("⚠️ Vui lòng nhập đầy đủ thông tin!")),
       );
       return;
     }
 
     if (password != confirmPassword) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text("Mật khẩu không khớp!")));
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("❌ Mật khẩu xác nhận không khớp!")),
+      );
       return;
     }
 
-    // ✅ Tạm thời: chỉ hiển thị thông báo thành công
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text("Đăng ký thành công cho tài khoản $username")),
-    );
+    // ✅ Gọi AuthService để đăng ký
+    bool success = AuthService.register(username, password);
 
-    // Quay về màn hình đăng nhập
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (context) => const LoginScreen()),
-    );
+    if (success) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("✅ Đăng ký thành công cho tài khoản $username")),
+      );
+
+      // Quay về màn hình đăng nhập
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const LoginScreen()),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("⚠️ Tài khoản $username đã tồn tại!")),
+      );
+    }
   }
 
+  // Style chung cho TextField
   InputDecoration _inputDecoration(String label, IconData icon) {
     return InputDecoration(
       labelText: label,
@@ -53,6 +64,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
       filled: true,
       fillColor: Colors.white.withOpacity(0.2),
       border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: const BorderSide(color: Colors.deepPurple, width: 2),
+      ),
     );
   }
 
@@ -66,7 +81,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
           Image.asset("assets/images/background.jpg", fit: BoxFit.cover),
 
           // Lớp phủ mờ
-          Container(color: Colors.black.withOpacity(0.5)),
+          Container(color: Colors.black.withOpacity(0.6)),
 
           // Form đăng ký
           Center(
@@ -75,17 +90,23 @@ class _RegisterScreenState extends State<RegisterScreen> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
+                  const Icon(
+                    Icons.app_registration,
+                    size: 80,
+                    color: Colors.white,
+                  ),
+                  const SizedBox(height: 10),
                   const Text(
-                    "Đăng ký",
+                    "Đăng ký tài khoản",
                     style: TextStyle(
-                      fontSize: 28,
+                      fontSize: 26,
                       fontWeight: FontWeight.bold,
                       color: Colors.white,
                     ),
                   ),
                   const SizedBox(height: 40),
 
-                  // Ô nhập username
+                  // Username
                   TextField(
                     controller: _usernameController,
                     style: const TextStyle(color: Colors.white),
@@ -93,7 +114,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   ),
                   const SizedBox(height: 20),
 
-                  // Ô nhập password
+                  // Password
                   TextField(
                     controller: _passwordController,
                     obscureText: true,
@@ -102,7 +123,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   ),
                   const SizedBox(height: 20),
 
-                  // Ô nhập xác nhận password
+                  // Confirm Password
                   TextField(
                     controller: _confirmPasswordController,
                     obscureText: true,
@@ -134,7 +155,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   ),
                   const SizedBox(height: 20),
 
-                  // Quay lại màn hình đăng nhập
+                  // Quay lại đăng nhập
                   TextButton(
                     onPressed: () {
                       Navigator.pushReplacement(
@@ -145,8 +166,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       );
                     },
                     child: const Text(
-                      "Đã có tài khoản? Đăng nhập ngay",
-                      style: TextStyle(color: Colors.white),
+                      "🔙 Đã có tài khoản? Đăng nhập ngay",
+                      style: TextStyle(
+                        color: Colors.white,
+                        decoration: TextDecoration.underline,
+                      ),
                     ),
                   ),
                 ],

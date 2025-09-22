@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'music_screen.dart';
 import 'register_screen.dart';
+import 'auth_service.dart'; // ✅ Import AuthService
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -13,22 +14,26 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
+  // Hàm xử lý đăng nhập
   void _login() {
     String username = _usernameController.text.trim();
     String password = _passwordController.text.trim();
 
-    if (username == "admin" && password == "123") {
+    bool success = AuthService.login(username, password);
+
+    if (success) {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => const MusicScreen()),
       );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Sai tài khoản hoặc mật khẩu!")),
+        const SnackBar(content: Text("❌ Sai tài khoản hoặc mật khẩu!")),
       );
     }
   }
 
+  // Style chung cho ô nhập
   InputDecoration _inputDecoration(String label, IconData icon) {
     return InputDecoration(
       labelText: label,
@@ -37,6 +42,10 @@ class _LoginScreenState extends State<LoginScreen> {
       filled: true,
       fillColor: Colors.white.withOpacity(0.2),
       border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: const BorderSide(color: Colors.deepPurple, width: 2),
+      ),
     );
   }
 
@@ -59,8 +68,10 @@ class _LoginScreenState extends State<LoginScreen> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
+                  const Icon(Icons.music_note, size: 80, color: Colors.white),
+                  const SizedBox(height: 10),
                   const Text(
-                    "Đăng nhập",
+                    "Music App",
                     style: TextStyle(
                       fontSize: 28,
                       fontWeight: FontWeight.bold,
@@ -69,7 +80,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   const SizedBox(height: 40),
 
-                  // Ô nhập username
+                  // Username
                   TextField(
                     controller: _usernameController,
                     style: const TextStyle(color: Colors.white),
@@ -77,7 +88,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   const SizedBox(height: 20),
 
-                  // Ô nhập password
+                  // Password
                   TextField(
                     controller: _passwordController,
                     obscureText: true,
@@ -118,7 +129,10 @@ class _LoginScreenState extends State<LoginScreen> {
                     },
                     child: const Text(
                       "Chưa có tài khoản? Đăng ký ngay",
-                      style: TextStyle(color: Colors.white),
+                      style: TextStyle(
+                        color: Colors.white,
+                        decoration: TextDecoration.underline,
+                      ),
                     ),
                   ),
                 ],
