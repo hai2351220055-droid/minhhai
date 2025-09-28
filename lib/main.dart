@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'login_screen.dart';
 
-void main() {
+void main() async {
+  // Đảm bảo Flutter đã khởi tạo trước khi gọi async
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // ✅ Với SQLite thì không cần AuthService.init()
   runApp(const MyApp());
 }
 
@@ -11,13 +15,13 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      debugShowCheckedModeBanner: false, // Ẩn banner góc phải
+      debugShowCheckedModeBanner: false, // Ẩn banner debug góc phải
       title: 'Music App',
       theme: ThemeData(
-        primarySwatch: Colors.blue, // Chủ đề màu xanh
-        scaffoldBackgroundColor: Colors.black, // Màu nền mặc định
+        primarySwatch: Colors.deepPurple,
+        scaffoldBackgroundColor: Colors.white, // nền trắng
       ),
-      home: const LoginScreen(), // ✅ Màn hình đầu tiên: Đăng nhập
+      home: const LoginScreen(), // ✅ Màn hình đầu tiên: Login
     );
   }
 }

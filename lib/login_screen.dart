@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'music_screen.dart';
 import 'register_screen.dart';
-import 'auth_service.dart'; // ✅ Import AuthService
+import 'auth_service.dart'; // ✅ Dùng AuthService với SQLite
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -14,14 +14,22 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
-  // Hàm xử lý đăng nhập
-  void _login() {
+  /// Hàm xử lý đăng nhập
+  Future<void> _login() async {
     String username = _usernameController.text.trim();
     String password = _passwordController.text.trim();
 
-    bool success = AuthService.login(username, password);
+    if (username.isEmpty || password.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("⚠️ Vui lòng nhập đầy đủ thông tin!")),
+      );
+      return;
+    }
+
+    bool success = await AuthService.login(username, password);
 
     if (success) {
+      // ✅ Điều hướng sang màn hình chính
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => const MusicScreen()),
@@ -33,7 +41,7 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
-  // Style chung cho ô nhập
+  /// Style cho ô nhập liệu
   InputDecoration _inputDecoration(String label, IconData icon) {
     return InputDecoration(
       labelText: label,

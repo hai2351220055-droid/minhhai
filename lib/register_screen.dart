@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'login_screen.dart';
-import 'auth_service.dart'; // ✅ Dùng AuthService để lưu tài khoản
+import 'auth_service.dart'; // ✅ dùng AuthService (SQLite)
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -15,11 +15,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final TextEditingController _confirmPasswordController =
       TextEditingController();
 
-  // Hàm xử lý đăng ký
-  void _register() {
-    String username = _usernameController.text.trim();
-    String password = _passwordController.text.trim();
-    String confirmPassword = _confirmPasswordController.text.trim();
+  /// ✅ Xử lý đăng ký
+  Future<void> _register() async {
+    final username = _usernameController.text.trim();
+    final password = _passwordController.text.trim();
+    final confirmPassword = _confirmPasswordController.text.trim();
 
     if (username.isEmpty || password.isEmpty || confirmPassword.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -35,18 +35,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
       return;
     }
 
-    // ✅ Gọi AuthService để đăng ký
-    bool success = AuthService.register(username, password);
+    final success = await AuthService.register(username, password);
 
     if (success) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("✅ Đăng ký thành công cho tài khoản $username")),
       );
-
-      // Quay về màn hình đăng nhập
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => const LoginScreen()),
+        MaterialPageRoute(builder: (_) => const LoginScreen()),
       );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -55,7 +52,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     }
   }
 
-  // Style chung cho TextField
+  /// ✅ Style cho TextField
   InputDecoration _inputDecoration(String label, IconData icon) {
     return InputDecoration(
       labelText: label,
@@ -123,7 +120,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   ),
                   const SizedBox(height: 20),
 
-                  // Confirm Password
+                  // Confirm password
                   TextField(
                     controller: _confirmPasswordController,
                     obscureText: true,
@@ -135,7 +132,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   ),
                   const SizedBox(height: 30),
 
-                  // Nút đăng ký
+                  // Button đăng ký
                   ElevatedButton(
                     onPressed: _register,
                     style: ElevatedButton.styleFrom(
@@ -155,14 +152,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   ),
                   const SizedBox(height: 20),
 
-                  // Quay lại đăng nhập
+                  // Quay lại login
                   TextButton(
                     onPressed: () {
                       Navigator.pushReplacement(
                         context,
-                        MaterialPageRoute(
-                          builder: (context) => const LoginScreen(),
-                        ),
+                        MaterialPageRoute(builder: (_) => const LoginScreen()),
                       );
                     },
                     child: const Text(
