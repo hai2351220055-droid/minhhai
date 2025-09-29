@@ -4,13 +4,18 @@ class AuthService {
   static String? currentUser;
 
   /// Đăng ký tài khoản mới
-  static Future<bool> register(String username, String password) async {
+  static Future<bool> register(
+    String username,
+    String password,
+    String email,
+    String phone,
+  ) async {
     try {
-      await DatabaseHelper.insertUser(username, password);
+      await DatabaseHelper.insertUser(username, password, email, phone);
       return true; // ✅ đăng ký thành công
     } catch (e) {
       print("❌ Lỗi khi đăng ký: $e");
-      return false; // ❌ thất bại (thường do username đã tồn tại)
+      return false; // ❌ thất bại (username đã tồn tại hoặc lỗi DB)
     }
   }
 
@@ -18,7 +23,7 @@ class AuthService {
   static Future<bool> login(String username, String password) async {
     final user = await DatabaseHelper.getUser(username, password);
     if (user != null) {
-      currentUser = username; // ✅ Lưu tên user hiện tại
+      currentUser = username; // ✅ Lưu user hiện tại
       return true;
     }
     return false;

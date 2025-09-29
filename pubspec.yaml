@@ -10,12 +10,26 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  shared_preferences: ^2.2.2 # lưu use (lỗi thì xóa thèn này)
-  cupertino_icons: ^1.0.8
-  sqflite: ^2.3.0     # Thư viện SQLite
-  path: ^1.8.0        # Dùng để lấy đường dẫn DB
-  audioplayers: ^6.0.0 # Thư viện phát nhạc
 
+  # Lưu thông tin user đơn giản
+  shared_preferences: ^2.2.2
+
+  # Icon iOS
+  cupertino_icons: ^1.0.8
+
+  # SQLite Database
+  sqflite: ^2.3.0
+  path: ^1.8.0
+  path_provider: ^2.1.5
+
+  # Phát nhạc
+  audioplayers: ^6.0.0
+
+  # Xuất PDF
+  pdf: ^3.11.0
+
+  # tải file lên
+  file_picker: ^8.0.3
 
 dev_dependencies:
   flutter_test:
@@ -24,11 +38,8 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+
+  # Tài nguyên ảnh & nhạc
   assets:
-    - assets/images/ 
+    - assets/images/
     - assets/music/
-
-
-
-
- 

@@ -11,6 +11,8 @@ class RegisterScreen extends StatefulWidget {
 
 class _RegisterScreenState extends State<RegisterScreen> {
   final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmPasswordController =
       TextEditingController();
@@ -18,12 +20,34 @@ class _RegisterScreenState extends State<RegisterScreen> {
   /// ✅ Xử lý đăng ký
   Future<void> _register() async {
     final username = _usernameController.text.trim();
+    final email = _emailController.text.trim();
+    final phone = _phoneController.text.trim();
     final password = _passwordController.text.trim();
     final confirmPassword = _confirmPasswordController.text.trim();
 
-    if (username.isEmpty || password.isEmpty || confirmPassword.isEmpty) {
+    if (username.isEmpty ||
+        email.isEmpty ||
+        phone.isEmpty ||
+        password.isEmpty ||
+        confirmPassword.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text("⚠️ Vui lòng nhập đầy đủ thông tin!")),
+      );
+      return;
+    }
+
+    // Validate email
+    if (!email.contains("@") || !email.contains(".")) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text("❌ Email không hợp lệ!")));
+      return;
+    }
+
+    // Validate phone (tối thiểu 9 số)
+    if (phone.length < 9) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("❌ Số điện thoại không hợp lệ!")),
       );
       return;
     }
@@ -35,11 +59,17 @@ class _RegisterScreenState extends State<RegisterScreen> {
       return;
     }
 
-    final success = await AuthService.register(username, password);
+    // ✅ gọi AuthService với 4 tham số
+    final success = await AuthService.register(
+      username,
+      password,
+      email,
+      phone,
+    );
 
     if (success) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("✅ Đăng ký thành công cho tài khoản $username")),
+        SnackBar(content: Text("✅ Đăng ký thành công cho $username")),
       );
       Navigator.pushReplacement(
         context,
@@ -108,6 +138,24 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     controller: _usernameController,
                     style: const TextStyle(color: Colors.white),
                     decoration: _inputDecoration("Tên đăng nhập", Icons.person),
+                  ),
+                  const SizedBox(height: 20),
+
+                  // Email
+                  TextField(
+                    controller: _emailController,
+                    style: const TextStyle(color: Colors.white),
+                    keyboardType: TextInputType.emailAddress,
+                    decoration: _inputDecoration("Email", Icons.email),
+                  ),
+                  const SizedBox(height: 20),
+
+                  // Phone
+                  TextField(
+                    controller: _phoneController,
+                    style: const TextStyle(color: Colors.white),
+                    keyboardType: TextInputType.phone,
+                    decoration: _inputDecoration("Số điện thoại", Icons.phone),
                   ),
                   const SizedBox(height: 20),
 

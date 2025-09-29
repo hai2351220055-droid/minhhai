@@ -5,6 +5,7 @@ import 'user_list_screen.dart'; // ✅ màn hình quản lý user
 import 'screens/home_screen.dart';
 import 'screens/search_screen.dart';
 import 'screens/library_screen.dart';
+import 'screens/profile_screen.dart'; // ✅ màn hình Tôi
 
 class MusicScreen extends StatefulWidget {
   const MusicScreen({super.key});
@@ -16,11 +17,12 @@ class MusicScreen extends StatefulWidget {
 class _MusicScreenState extends State<MusicScreen> {
   int _currentIndex = 0; // tab hiện tại
 
-  // ✅ Gọi 3 màn hình từ thư mục screens
+  // ✅ Gọi 4 màn hình
   final List<Widget> _screens = const [
     HomeScreen(),
     SearchScreen(),
     LibraryScreen(),
+    ProfileScreen(), // 👤 màn hình "Tôi"
   ];
 
   @override
@@ -74,6 +76,7 @@ class _MusicScreenState extends State<MusicScreen> {
         },
         selectedItemColor: Colors.deepPurple,
         unselectedItemColor: Colors.grey,
+        type: BottomNavigationBarType.fixed, // hiển thị đủ 4 tab
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
           BottomNavigationBarItem(icon: Icon(Icons.search), label: "Search"),
@@ -81,6 +84,10 @@ class _MusicScreenState extends State<MusicScreen> {
             icon: Icon(Icons.library_music),
             label: "Library",
           ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person),
+            label: "Tôi",
+          ), // 👤 thêm tab Tôi
         ],
       ),
     );

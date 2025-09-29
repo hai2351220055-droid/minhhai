@@ -13,39 +13,48 @@ class _HomeScreenState extends State<HomeScreen> {
   String? _currentSong;
   bool _isPlaying = false;
 
-  // Danh sách nhạc (nằm trong assets/music/)
+  // Danh sách nhạc trong assets/music/
   final List<Map<String, String>> _songs = [
-    {"title": "Bài hát 1", "file": "song1.mp3"},
-    {"title": "Bài hát 2", "file": "song2.mp3"},
+    {"title": "Bài hát 1", "file": "song1.m4a"},
+    {"title": "Bài hát 2", "file": "song2.m4a"},
+    {"title": "Bài hát 3", "file": "song3.mp3"},
   ];
 
-  // Hàm phát nhạc
+  // Hàm phát / tạm dừng nhạc
   Future<void> _playSong(String file) async {
-    if (_currentSong == file && _isPlaying) {
-      // Nếu đang phát thì pause
-      await _player.pause();
-      setState(() {
-        _isPlaying = false;
-      });
-    } else {
-      // Phát nhạc mới (đúng đường dẫn assets/music/)
-      await _player.play(AssetSource("music/$file"));
-      setState(() {
-        _currentSong = file;
-        _isPlaying = true;
-      });
+    try {
+      if (_currentSong == file && _isPlaying) {
+        await _player.pause();
+        setState(() {
+          _isPlaying = false;
+        });
+      } else {
+        await _player.play(AssetSource("music/$file"));
+        setState(() {
+          _currentSong = file;
+          _isPlaying = true;
+        });
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text("❌ Lỗi phát nhạc: $e")));
     }
   }
 
   @override
   void dispose() {
-    _player.dispose(); // Giải phóng tài nguyên khi thoát
+    _player.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: const Text("🎵 Trình phát nhạc"),
+        backgroundColor: Colors.deepPurple,
+      ),
       body: ListView.builder(
         itemCount: _songs.length,
         itemBuilder: (context, index) {
