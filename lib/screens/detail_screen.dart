@@ -18,7 +18,7 @@ class DetailScreen extends StatelessWidget {
           style: const TextStyle(
             fontSize: 22,
             fontWeight: FontWeight.bold,
-            color: Colors.deepPurple,
+            color: Color.fromARGB(255, 15, 13, 18),
           ),
           textAlign: TextAlign.center,
         ),

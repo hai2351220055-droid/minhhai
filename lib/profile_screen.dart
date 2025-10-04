@@ -88,7 +88,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("👤 Thông tin của tôi"),
-        backgroundColor: Colors.deepPurple,
+        backgroundColor: const Color.fromARGB(255, 213, 209, 220),
       ),
       body: currentUser == null
           ? const Center(child: Text("Không tìm thấy thông tin user"))
