@@ -5,9 +5,9 @@ class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
   final List<Map<String, String>> _songs = const [
-    {"title": "Bài hát 1", "file": "song1.m4a"},
-    {"title": "Bài hát 2", "file": "song2.m4a"},
-    {"title": "Bài hát 3", "file": "song3.mp3"},
+    {"title": "Gánh mẹ", "file": "song1.m4a"},
+    {"title": "Thành Phố Buồn", "file": "song2.m4a"},
+    {"title": "Thái Hoàng", "file": "song3.mp3"},
   ];
 
   @override

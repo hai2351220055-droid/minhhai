@@ -10,30 +10,20 @@ class LibraryScreen extends StatefulWidget {
 }
 
 class _LibraryScreenState extends State<LibraryScreen> {
-  List<Map<String, String>> _likedSongs = [];
-
-  // Danh sách nhạc có sẵn trong app
-  final List<Map<String, String>> _allSongs = const [
-    {"title": "Bài hát 1", "file": "song1.m4a"},
-    {"title": "Bài hát 2", "file": "song2.m4a"},
-    {"title": "Bài hát 3", "file": "song3.mp3"},
-  ];
+  List<String> _favoriteSongs = [];
+  List<String> _historySongs = [];
 
   @override
   void initState() {
     super.initState();
-    _loadLikedSongs();
+    _loadLibrary();
   }
 
-  Future<void> _loadLikedSongs() async {
+  Future<void> _loadLibrary() async {
     final prefs = await SharedPreferences.getInstance();
-    final likedTitles =
-        prefs.getKeys().where((key) => prefs.getBool(key) == true);
-
     setState(() {
-      _likedSongs = _allSongs
-          .where((song) => likedTitles.contains(song["title"]))
-          .toList();
+      _favoriteSongs = prefs.getStringList("favorites") ?? [];
+      _historySongs = prefs.getStringList("history") ?? [];
     });
   }
 
@@ -41,40 +31,126 @@ class _LibraryScreenState extends State<LibraryScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("💜 Thư viện yêu thích"),
+        title: const Text("🎵 Thư viện"),
         backgroundColor: Colors.deepPurple,
       ),
-      body: _likedSongs.isEmpty
-          ? const Center(
-              child: Text(
-                "Chưa có bài hát nào được yêu thích 😢",
-                style: TextStyle(fontSize: 16, color: Colors.grey),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(15),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // 🧡 Yêu thích
+              const Text(
+                "❤️ Thư viện yêu thích",
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
-            )
-          : ListView.builder(
-              itemCount: _likedSongs.length,
-              itemBuilder: (context, index) {
-                final song = _likedSongs[index];
-                return ListTile(
-                  leading: const Icon(Icons.favorite, color: Colors.pink),
-                  title: Text(song["title"]!),
-                  subtitle: Text(song["file"]!),
-                  trailing:
-                      const Icon(Icons.play_arrow, color: Colors.deepPurple),
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => PlayerScreen(
-                          songList: _likedSongs,
-                          currentIndex: index,
-                        ),
-                      ),
-                    );
-                  },
-                );
-              },
-            ),
+              const SizedBox(height: 10),
+              _favoriteSongs.isEmpty
+                  ? const Text("Chưa có bài hát yêu thích nào...")
+                  : Column(
+                      children: _favoriteSongs.map((title) {
+                        return ListTile(
+                          leading:
+                              const Icon(Icons.favorite, color: Colors.red),
+                          title: Text(title),
+                          subtitle: Text("Đã thêm vào yêu thích"),
+                          trailing: const Icon(Icons.play_arrow),
+                          onTap: () {
+                            // Chuyển sang PlayerScreen
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => PlayerScreen(
+                                  songList: [
+                                    {"title": title, "file": "$title.mp3"}
+                                  ],
+                                  currentIndex: 0,
+                                ),
+                              ),
+                            );
+                          },
+                        );
+                      }).toList(),
+                    ),
+              const Divider(height: 30, thickness: 1),
+
+              // ⏱️ Lịch sử nghe nhạc
+              const Text(
+                "🕒 Lịch sử nghe nhạc",
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 10),
+              _historySongs.isEmpty
+                  ? const Text("Bạn chưa nghe bài hát nào gần đây.")
+                  : Column(
+                      children: _historySongs.map((title) {
+                        return ListTile(
+                          leading: const Icon(Icons.history,
+                              color: Colors.deepPurple),
+                          title: Text(title),
+                          subtitle: const Text("Nghe gần đây"),
+                        );
+                      }).toList(),
+                    ),
+              const Divider(height: 30, thickness: 1),
+
+              // 🎶 Playlist
+              const Text(
+                "🎶 Playlists",
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 10),
+              ListTile(
+                leading:
+                    const Icon(Icons.queue_music, color: Colors.deepPurple),
+                title: const Text("Danh sách phát của bạn"),
+                subtitle: const Text("Chưa có nội dung..."),
+                onTap: () {
+                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                      content: Text("🎶 Tính năng Playlists sắp ra mắt!")));
+                },
+              ),
+
+              const Divider(height: 30, thickness: 1),
+
+              // 👥 Following
+              const Text(
+                "👥 Following",
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 10),
+              ListTile(
+                leading: const Icon(Icons.person_add, color: Colors.deepPurple),
+                title: const Text("Nghệ sĩ bạn theo dõi"),
+                subtitle: const Text("Tính năng đang phát triển..."),
+                onTap: () {
+                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                      content: Text("👥 Tính năng Following sắp ra mắt!")));
+                },
+              ),
+
+              const Divider(height: 30, thickness: 1),
+
+              // 💿 Albums
+              const Text(
+                "💿 Albums",
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 10),
+              ListTile(
+                leading: const Icon(Icons.album, color: Colors.deepPurple),
+                title: const Text("Album của bạn"),
+                subtitle: const Text("Tính năng đang phát triển..."),
+                onTap: () {
+                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                      content: Text("💿 Tính năng Albums sắp ra mắt!")));
+                },
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
