@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'login_screen.dart';
 import 'auth_service.dart';
-import 'user_list_screen.dart'; // ✅ màn hình quản lý user
+import 'user_list_screen.dart';
 import 'screens/home_screen.dart';
 import 'screens/search_screen.dart';
 import 'screens/library_screen.dart';
-import 'screens/profile_screen.dart'; // ✅ màn hình Tôi
+import 'screens/profile_screen.dart';
 
 class MusicScreen extends StatefulWidget {
   const MusicScreen({super.key});
@@ -15,14 +15,14 @@ class MusicScreen extends StatefulWidget {
 }
 
 class _MusicScreenState extends State<MusicScreen> {
-  int _currentIndex = 0; // tab hiện tại
+  int _currentIndex = 0;
 
-  // ✅ Gọi 4 màn hình
+  // ✅ Danh sách các tab màn hình
   final List<Widget> _screens = const [
     HomeScreen(),
     SearchScreen(),
     LibraryScreen(),
-    ProfileScreen(), // 👤 màn hình "Tôi"
+    ProfileScreen(),
   ];
 
   @override
@@ -34,9 +34,10 @@ class _MusicScreenState extends State<MusicScreen> {
         title: const Text("🎵 Music Player"),
         backgroundColor: Colors.deepPurple,
         actions: [
+          // ✅ Nếu là admin -> hiển thị nút quản lý user
           if (username == "admin")
             IconButton(
-              tooltip: "Danh sách user",
+              tooltip: "Danh sách người dùng",
               icon: const Icon(Icons.supervised_user_circle),
               onPressed: () {
                 Navigator.push(
@@ -63,7 +64,7 @@ class _MusicScreenState extends State<MusicScreen> {
         ],
       ),
 
-      // ✅ Hiển thị tab theo _currentIndex
+      // ✅ Hiển thị màn hình tương ứng tab
       body: _screens[_currentIndex],
 
       // ✅ Thanh điều hướng dưới
@@ -76,7 +77,7 @@ class _MusicScreenState extends State<MusicScreen> {
         },
         selectedItemColor: Colors.deepPurple,
         unselectedItemColor: Colors.grey,
-        type: BottomNavigationBarType.fixed, // hiển thị đủ 4 tab
+        type: BottomNavigationBarType.fixed,
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
           BottomNavigationBarItem(icon: Icon(Icons.search), label: "Search"),
@@ -87,7 +88,7 @@ class _MusicScreenState extends State<MusicScreen> {
           BottomNavigationBarItem(
             icon: Icon(Icons.person),
             label: "Tôi",
-          ), // 👤 thêm tab Tôi
+          ),
         ],
       ),
     );

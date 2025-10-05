@@ -11,8 +11,8 @@ dependencies:
   flutter:
     sdk: flutter
 
-  # Lưu thông tin user đơn giản
-  shared_preferences: ^2.2.2
+  # Lưu thông tin người dùng
+  shared_preferences: ^2.3.3
 
   # Icon iOS
   cupertino_icons: ^1.0.8
@@ -24,22 +24,25 @@ dependencies:
 
   # Phát nhạc
   audioplayers: ^6.0.0
+  just_audio: ^0.10.5
+  audio_video_progress_bar: ^2.0.3
 
   # Xuất PDF
   pdf: ^3.11.0
 
-  # tải file lên
+  # Chọn ảnh / tải file
+  image_picker: ^1.1.2
   file_picker: ^10.3.3
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+
   flutter_lints: ^6.0.0
 
 flutter:
   uses-material-design: true
 
-  # Tài nguyên ảnh & nhạc
   assets:
     - assets/images/
     - assets/music/
