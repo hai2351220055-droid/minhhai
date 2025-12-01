@@ -1,7 +1,7 @@
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
-    // Flutter plugin phải nằm sau Android và Kotlin plugin
+    // ⚙️ Plugin Flutter phải nằm cuối
     id("dev.flutter.flutter-gradle-plugin")
 }
 
@@ -11,27 +11,27 @@ android {
     ndkVersion = flutter.ndkVersion
 
     defaultConfig {
-        // ⚠️ Application ID là gói chính của app — KHÔNG đổi lung tung
         applicationId = "com.example.minhhai"
         minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
-        multiDexEnabled = true  // hỗ trợ khi app có nhiều thư viện
+        multiDexEnabled = true // Hỗ trợ nhiều thư viện lớn
     }
 
+    // ✅ Dùng Java 17 để tránh cảnh báo "Java 8 obsolete"
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 
     kotlinOptions {
-        jvmTarget = "11"
+        jvmTarget = "17"
     }
 
     buildTypes {
         release {
-            // Khi build release chưa ký app, dùng tạm debug key
+            // Tạm thời dùng debug key nếu chưa ký release key
             signingConfig = signingConfigs.getByName("debug")
             isMinifyEnabled = false
             isShrinkResources = false
@@ -42,7 +42,7 @@ android {
     }
 
     packaging {
-        // tránh lỗi duplicate META-INF
+        // 🧩 Loại bỏ các file trùng META-INF khi build
         resources.excludes.add("META-INF/DEPENDENCIES")
         resources.excludes.add("META-INF/LICENSE")
         resources.excludes.add("META-INF/LICENSE.txt")

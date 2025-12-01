@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'music_screen.dart';
 import 'register_screen.dart';
-import 'auth_service.dart'; // ✅ Dùng AuthService với SQLite
+import 'auth_service.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -14,7 +14,9 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
-  /// Hàm xử lý đăng nhập
+  bool _obscurePass = true; // 👁 hiện/ẩn mật khẩu
+
+  /// Xử lý đăng nhập
   Future<void> _login() async {
     String username = _usernameController.text.trim();
     String password = _passwordController.text.trim();
@@ -29,7 +31,6 @@ class _LoginScreenState extends State<LoginScreen> {
     bool success = await AuthService.login(username, password);
 
     if (success) {
-      // ✅ Điều hướng sang màn hình chính
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => const MusicScreen()),
@@ -41,7 +42,7 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
-  /// Style cho ô nhập liệu
+  /// Style ô nhập liệu
   InputDecoration _inputDecoration(String label, IconData icon) {
     return InputDecoration(
       labelText: label,
@@ -63,32 +64,37 @@ class _LoginScreenState extends State<LoginScreen> {
       body: Stack(
         fit: StackFit.expand,
         children: [
-          // Ảnh nền
           Image.asset("assets/images/background.jpg", fit: BoxFit.cover),
-
-          // Lớp phủ mờ
           Container(color: Colors.black.withOpacity(0.5)),
 
-          // Form đăng nhập
           Center(
             child: SingleChildScrollView(
-              padding: const EdgeInsets.all(20),
+              padding: const EdgeInsets.all(25),
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Icon(Icons.music_note, size: 80, color: Colors.white),
-                  const SizedBox(height: 10),
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(20),
+                    child: Image.asset(
+                      'assets/images/dau.jpg',
+                      width: 120,
+                      height: 120,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                  const SizedBox(height: 15),
+
                   const Text(
                     "Music App",
                     style: TextStyle(
                       fontSize: 28,
                       fontWeight: FontWeight.bold,
                       color: Colors.white,
+                      letterSpacing: 1.5,
                     ),
                   ),
-                  const SizedBox(height: 40),
+                  const SizedBox(height: 35),
 
-                  // Username
+                  // username
                   TextField(
                     controller: _usernameController,
                     style: const TextStyle(color: Colors.white),
@@ -96,24 +102,31 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   const SizedBox(height: 20),
 
-                  // Password
+                  // password + hiện/ẩn
                   TextField(
                     controller: _passwordController,
-                    obscureText: true,
+                    obscureText: _obscurePass,
                     style: const TextStyle(color: Colors.white),
-                    decoration: _inputDecoration("Mật khẩu", Icons.lock),
+                    decoration: _inputDecoration("Mật khẩu", Icons.lock).copyWith(
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          _obscurePass ? Icons.visibility_off : Icons.visibility,
+                          color: Colors.white,
+                        ),
+                        onPressed: () {
+                          setState(() => _obscurePass = !_obscurePass);
+                        },
+                      ),
+                    ),
                   ),
                   const SizedBox(height: 30),
 
-                  // Nút đăng nhập
                   ElevatedButton(
                     onPressed: _login,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.deepPurple,
                       padding: const EdgeInsets.symmetric(
-                        horizontal: 50,
-                        vertical: 15,
-                      ),
+                          horizontal: 70, vertical: 15),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
                       ),
@@ -125,14 +138,12 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   const SizedBox(height: 20),
 
-                  // Nút chuyển sang đăng ký
                   TextButton(
                     onPressed: () {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => const RegisterScreen(),
-                        ),
+                            builder: (context) => const RegisterScreen()),
                       );
                     },
                     child: const Text(
